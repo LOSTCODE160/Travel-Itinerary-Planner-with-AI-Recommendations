@@ -1,17 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const apiKey = process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim() : "";
-
-// Initialize Gemini SDK once (Global scope)
-const genAI = new GoogleGenerativeAI(apiKey);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
 const generateItineraryPlan = async (destination, startDate, endDate, preferences) => {
   try {
-    if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
-      throw new Error("Invalid or missing GEMINI_API_KEY in .env");
-    }
-
     const prompt = `
       Create a detailed daily travel itinerary for a trip to ${destination}.
       Dates: ${startDate} to ${endDate}.
