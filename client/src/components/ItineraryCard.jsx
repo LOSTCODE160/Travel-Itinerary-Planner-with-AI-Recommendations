@@ -2,58 +2,47 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ItineraryCard = ({ dayData, index }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(true);
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1, duration: 0.5 }}
-            whileHover={{ scale: 1.02 }}
-            className="glass-card mb-6 overflow-hidden cursor-pointer"
-            onClick={() => setIsExpanded(!isExpanded)}
-            style={{ padding: '1.5rem' }}
+            transition={{ delay: index * 0.1 }}
+            className="card hover:shadow-lg transition-shadow duration-300"
+            style={{ maxWidth: '100%', marginBottom: '1rem', padding: '1.5rem' }}
         >
-            <div className="flex justify-between items-center">
-                <div>
-                    <h3 className="text-xl font-bold text-white">Day {dayData.day}</h3>
-                    <p className="text-gray-400 text-sm">{dayData.date || `Day ${dayData.day} of trip`}</p>
+            <div
+                className="flex justify-between items-center cursor-pointer select-none"
+                onClick={() => setIsExpanded(!isExpanded)}
+            >
+                <div className="flex items-baseline gap-3">
+                    <h3 className="text-lg font-semibold text-white">Day {dayData.day}</h3>
+                    <span className="text-muted text-sm font-medium">{dayData.date}</span>
                 </div>
-                <motion.div
-                    animate={{ rotate: isExpanded ? 180 : 0 }}
-                    className="text-cyan-400 text-2xl"
-                >
+                <div className={`text-muted transform transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
                     ▼
-                </motion.div>
+                </div>
             </div>
 
             <AnimatePresence>
-                {(isExpanded || true) && ( // Always show preview, but maybe fully expand details?
-                    // Actually, let's just show it all the time for better UX, or just toggle details.
-                    // Prompt asked for "Expand on hover" but that can be annoying. Let's stick to "Expand on click" or just always visible but animated.
-                    // Let's go with: Always show a snippet, expand for full details vs just showing all.
-                    // For simplicity and "mobile friendly", let's render the list but stagger the items.
+                {isExpanded && (
                     <motion.div
-                        initial={false}
+                        initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
-                        className="mt-4"
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
                     >
-                        <div className="space-y-3">
+                        <div className="pt-6 space-y-4">
                             {dayData.activities.map((activity, actIndex) => (
-                                <motion.div
-                                    key={actIndex}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.2 + (actIndex * 0.1) }}
-                                    className="p-3 rounded-lg bg-white/5 border border-white/10 flex gap-3 items-start"
-                                >
-                                    <span className="text-xs font-bold text-pink-500 uppercase mt-1 min-w-[60px]">
+                                <div key={actIndex} className="flex gap-4 items-start group">
+                                    <div className="w-24 flex-shrink-0 text-xs font-semibold text-muted uppercase mt-1 tracking-wide">
                                         {activity.time}
-                                    </span>
-                                    <p className="text-gray-200 text-sm leading-relaxed">
+                                    </div>
+                                    <div className="text-gray-300 text-sm leading-relaxed border-l border-border-color pl-4 group-hover:border-white transition-colors">
                                         {activity.description}
-                                    </p>
-                                </motion.div>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </motion.div>
