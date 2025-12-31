@@ -1,5 +1,5 @@
 import Itinerary from '../models/Itinerary.js';
-import { generateItinerary as generateItineraryService } from '../services/geminiService.js';
+import { generateItineraryPlan } from '../services/geminiService.js';
 
 // @desc    Create a new itinerary
 // @route   POST /api/itineraries
@@ -37,24 +37,22 @@ const generateItinerary = async (req, res) => {
             return res.status(400).json({ message: 'User ID, destination, startDate, and endDate are required' });
         }
 
-        const aiData = await generateItineraryService(destination, startDate, endDate, preferences);
-
-        if (!aiData || !aiData.dailyPlan) {
-            return res.status(500).json({ message: 'Failed to generate valid itinerary structure from AI' });
-        }
+        // Call Gemini Service
+        // The service returns the JSON array of daily objects
+        const dailyPlan = await generateItineraryPlan(destination, startDate, endDate, preferences || []);
 
         const itinerary = await Itinerary.create({
             userId,
-            destination: aiData.destination || destination,
+            destination,
             startDate,
             endDate,
-            dailyPlan: aiData.dailyPlan,
+            dailyPlan: dailyPlan, // generated array
         });
 
         res.status(201).json(itinerary);
     } catch (error) {
-        console.error("Controller Error:", error);
-        res.status(500).json({ message: error.message || 'Server Error' });
+        console.error("Generate Itinerary Error:", error);
+        res.status(500).json({ message: error.message || 'Failed to generate itinerary' });
     }
 };
 

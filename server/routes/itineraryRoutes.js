@@ -3,8 +3,8 @@ import { createItinerary, getItinerariesByUser, generateItinerary } from '../con
 
 const router = express.Router();
 
-router.post('/generate', generateItinerary);
 router.post('/', createItinerary);
+router.post('/generate', generateItinerary);
 router.get('/:userId', getItinerariesByUser);
 
 export default router;

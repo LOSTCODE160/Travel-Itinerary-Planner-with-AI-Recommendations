@@ -29,4 +29,5 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log("GEMINI KEY PRESENT:", !!process.env.GEMINI_API_KEY);
 });

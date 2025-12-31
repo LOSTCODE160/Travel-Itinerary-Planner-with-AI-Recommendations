@@ -1,56 +1,49 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-if (!process.env.GEMINI_API_KEY) {
-  throw new Error('GEMINI_API_KEY is not defined in environment variables');
-}
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-export const generateItinerary = async (destination, startDate, endDate, preferences) => {
+const generateItineraryPlan = async (destination, startDate, endDate, preferences) => {
   try {
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not defined");
+    }
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const totalDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
-
     const prompt = `
-            Create a day-wise travel itinerary for a trip to ${destination} for ${totalDays} days.
-            Preferences: ${preferences || 'None'}.
-            
-            Strictly return the output in valid JSON format with the following structure:
-            {
-              "destination": "${destination}",
-              "totalDays": ${totalDays},
-              "dailyPlan": [
-                {
-                  "day": 1,
-                  "title": "Day Title",
-                  "activities": [
-                    {
-                      "name": "Activity Name",
-                      "description": "Short description"
-                    }
-                  ]
-                }
-              ]
-            }
+      Create a detailed daily travel itinerary for a trip to ${destination}.
+      Dates: ${startDate} to ${endDate}.
+      Preferences: ${preferences.join(", ")}.
 
-            Do NOT include any markdown formatting (like \`\`\`json). Return ONLY the raw JSON string.
-        `;
+      OUTPUT FORMAT:
+      Provide the response ONLY as a valid JSON array of objects. 
+      Do NOT wrap in markdown code blocks like \`\`\`json. 
+      Do NOT include any text before or after the JSON.
+      
+      Schema for each day object:
+      {
+        "day": 1,
+        "date": "YYYY-MM-DD",
+        "activities": [
+          {
+            "time": "morning/afternoon/evening",
+            "description": "Activity description"
+          }
+        ]
+      }
+    `;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
-    let text = response.text();
+    const text = response.text();
 
-    // Cleanup if Gemini wraps in markdown despite instructions
-    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    // Cleanup potential markdown formatting if the model disobeys
+    const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
 
-    const itinerary = JSON.parse(text);
-    return itinerary;
-
+    return JSON.parse(cleanText);
   } catch (error) {
-    console.error('Gemini API Error:', error);
-    throw new Error('Failed to generate itinerary. Please try again.');
+    console.error("Gemini API Error:", error);
+    throw new Error("Failed to generate itinerary with AI");
   }
 };
+
+export { generateItineraryPlan };
