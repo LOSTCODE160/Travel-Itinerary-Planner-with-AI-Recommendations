@@ -1,18 +1,16 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+const apiKey = process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim() : "";
+
+// Initialize Gemini SDK once (Global scope)
+const genAI = new GoogleGenerativeAI(apiKey);
+const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
 const generateItineraryPlan = async (destination, startDate, endDate, preferences) => {
   try {
-    const apiKey = process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim() : "";
-
-    // Validation log as requested
-    console.log("Gemini Key Loaded:", !!apiKey && apiKey !== "YOUR_API_KEY_HERE");
-
     if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
-      throw new Error("Invalid GEMINI_API_KEY. Please check your .env file.");
+      throw new Error("Invalid or missing GEMINI_API_KEY in .env");
     }
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
     const prompt = `
       Create a detailed daily travel itinerary for a trip to ${destination}.
@@ -46,11 +44,7 @@ const generateItineraryPlan = async (destination, startDate, endDate, preference
 
     return JSON.parse(cleanText);
   } catch (error) {
-    if (error.message.includes("400")) {
-      console.error("Gemini API Key Error: The provided API key is invalid or expired.");
-    } else {
-      console.error("Gemini Generation Error:", error);
-    }
+    console.error("Gemini Generation Error:", error);
     throw new Error("Failed to generate itinerary with AI");
   }
 };
