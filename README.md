@@ -3,15 +3,28 @@
 A full-stack web application to plan travel itineraries with AI-powered recommendations.
 
 ## Tech Stack
-- Frontend: React.js (Vite)
-- Backend: Node.js + Express.js
-- Database: MongoDB (Coming soon)
-- AI: Google Gemini API (Coming soon)
+- **Frontend**: React.js (Vite), Framer Motion
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB
+- **AI**: Google Gemini API
 
-## Development Plan
-### Phase 1: Initial project setup and folder structure
-### Phase 2: User Authentication
-### Phase 3: Core Itinerary CRUD
-### Phase 4: Integration with Google Gemini
-### Phase 5: Enhanced UI/UX
-### Phase 6: Deployment
+## Development Status
+- **Backend APIs**: Functional
+- **Integration**: Google Gemini AI integrated
+- **Database**: Connected to MongoDB
+- **Frontend**: Functional with Animations
+
+## Setup & Run
+1. **Server**:
+   ```bash
+   cd server
+   npm install
+   npm run dev
+   ```
+2. **Client**:
+   ```bash
+   cd client
+   npm install
+   npm run dev
+   ```
+

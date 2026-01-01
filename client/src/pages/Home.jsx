@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import AnimatedInput from '../components/AnimatedInput';
 import AnimatedButton from '../components/AnimatedButton';
 import Loading from '../components/Loading';
+import { generateItinerary } from '../services/itineraryService';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -35,8 +35,8 @@ const Home = () => {
                 preferences: preferencesArray
             };
 
-            const res = await axios.post('/api/itineraries/generate', payload);
-            navigate('/itinerary', { state: { itinerary: res.data } });
+            const data = await generateItinerary(payload);
+            navigate('/itinerary', { state: { itinerary: data } });
 
         } catch (err) {
             console.error(err);
