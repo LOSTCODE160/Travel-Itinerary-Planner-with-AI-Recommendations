@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, MapPin, Clock } from 'lucide-react';
 import ItineraryCard from '../components/ItineraryCard';
 import AnimatedButton from '../components/AnimatedButton';
 import heroImage from '../assets/hero.png';
+import TripMap from '../components/TripMap';
 
 const Itinerary = () => {
     const location = useLocation();
@@ -107,6 +108,13 @@ const Itinerary = () => {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                 >
+                    <div style={{ marginBottom: '2rem' }}>
+                        <h3 className="heading-primary" style={{ fontSize: '1.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <MapPin size={24} /> Trip Map
+                        </h3>
+                        <TripMap destination={itinerary.destination} />
+                    </div>
+
                     <div className="itinerary-grid">
                         {itinerary.dailyPlan?.map((day, index) => (
                             <ItineraryCard key={index} dayData={day} index={index} />
