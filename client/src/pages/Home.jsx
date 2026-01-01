@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { MapPin, Calendar, User, Compass, Heart } from 'lucide-react';
 import AnimatedInput from '../components/AnimatedInput';
 import AnimatedButton from '../components/AnimatedButton';
 import Loading from '../components/Loading';
 import { generateItinerary } from '../services/itineraryService';
+import logo from '../assets/logo.png';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -55,34 +57,50 @@ const Home = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
-                <div className="mb-8 text-center">
-                    <h1 className="text-3xl font-bold mb-2">Travel Planner AI</h1>
-                    <p className="text-muted text-sm">Generate your perfect trip in seconds</p>
+                <div className="mb-8 text-center flex flex-col items-center">
+                    <img src={logo} alt="TravelPlanner Logo" style={{ width: '80px', height: '80px', marginBottom: '1.5rem', borderRadius: '16px', boxShadow: '0 0 20px rgba(59, 130, 246, 0.2)' }} />
+                    <h1 className="heading-primary">Generate your perfect trip in seconds</h1>
+                    <p className="text-muted text-sm">Enter your details below to get started</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
                     {error && (
-                        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-md text-sm mb-6">
+                        <div className="error-box">
                             {error}
                         </div>
                     )}
 
                     {loading ? (
-                        <div className="py-12 flex flex-col items-center justify-center text-center">
-                            <Loading text="Designing your trip..." />
+                        <div className="loading-container">
+                            <Loading text="AI is creating your itinerary..." />
                         </div>
                     ) : (
                         <>
-                            <AnimatedInput
-                                label="Where are you going?"
-                                name="destination"
-                                value={formData.destination}
-                                onChange={handleChange}
-                                placeholder="e.g. Kyoto, Japan"
-                                required
-                            />
+                            <div style={{ marginBottom: '1rem' }}>
+                                <AnimatedInput
+                                    label="User ID"
+                                    name="userId"
+                                    value={formData.userId}
+                                    onChange={handleChange}
+                                    placeholder="e.g. user-123"
+                                    required
+                                    icon={<User size={18} />}
+                                />
+                            </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div style={{ marginBottom: '1rem' }}>
+                                <AnimatedInput
+                                    label="Where are you going?"
+                                    name="destination"
+                                    value={formData.destination}
+                                    onChange={handleChange}
+                                    placeholder="e.g. Kyoto, Japan"
+                                    required
+                                    icon={<MapPin size={18} />}
+                                />
+                            </div>
+
+                            <div className="form-row">
                                 <AnimatedInput
                                     label="Start Date"
                                     type="date"
@@ -90,6 +108,7 @@ const Home = () => {
                                     value={formData.startDate}
                                     onChange={handleChange}
                                     required
+                                    icon={<Calendar size={18} />}
                                 />
                                 <AnimatedInput
                                     label="End Date"
@@ -98,20 +117,27 @@ const Home = () => {
                                     value={formData.endDate}
                                     onChange={handleChange}
                                     required
+                                    icon={<Calendar size={18} />}
                                 />
                             </div>
 
-                            <AnimatedInput
-                                label="Preferences (Optional)"
-                                name="preferences"
-                                value={formData.preferences}
-                                onChange={handleChange}
-                                placeholder="Nature, Food, History..."
-                            />
+                            <div style={{ marginBottom: '1rem' }}>
+                                <AnimatedInput
+                                    label="Preferences (Optional)"
+                                    name="preferences"
+                                    value={formData.preferences}
+                                    onChange={handleChange}
+                                    placeholder="Nature, Food, History..."
+                                    icon={<Heart size={18} />}
+                                />
+                            </div>
 
-                            <div className="mt-6">
-                                <AnimatedButton type="submit">
-                                    Generate Itinerary
+                            <div style={{ marginTop: '2rem' }}>
+                                <AnimatedButton type="submit" disabled={loading}>
+                                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                                        <Compass size={20} />
+                                        Generate Itinerary
+                                    </span>
                                 </AnimatedButton>
                             </div>
                         </>
