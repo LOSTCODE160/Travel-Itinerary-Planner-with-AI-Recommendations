@@ -68,7 +68,7 @@ const TripMap = ({ destination, activities }) => {
                         setHasLocation(true);
                     }
                 })
-                .catch(err => console.error("Geocoding failed", err));
+                .catch(err => console.warn("Geocoding failed:", err));
         }
     }, [destination]);
 

@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, MapPin, Clock } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Clock, Download } from 'lucide-react';
+import { generatePDF } from '../utils/pdfGenerator';
 import ItineraryCard from '../components/ItineraryCard';
-import AnimatedButton from '../components/AnimatedButton';
 import heroImage from '../assets/hero.png';
 import TripMap from '../components/TripMap';
 
@@ -18,11 +18,15 @@ const Itinerary = () => {
         }
     }, [itinerary, navigate]);
 
+    const handleExportPdf = () => {
+        if (!itinerary) return;
+        generatePDF(itinerary);
+    };
+
     if (!itinerary) return null;
 
     return (
         <div>
-            {/* Hero Section */}
             <div style={{
                 position: 'relative',
                 height: '40vh',
@@ -54,7 +58,7 @@ const Itinerary = () => {
                     left: '50%',
                     transform: 'translateX(-50%)',
                     paddingBottom: '2rem',
-                    minHeight: 'auto' // override container-page min-height
+                    minHeight: 'auto'
                 }}>
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -80,7 +84,26 @@ const Itinerary = () => {
                     </motion.div>
                 </div>
 
-                <div style={{ position: 'absolute', top: '2rem', right: '2rem', zIndex: 10 }}>
+                <div style={{ position: 'absolute', top: '2rem', right: '2rem', zIndex: 10, display: 'flex', gap: '1rem' }}>
+                    <button
+                        onClick={handleExportPdf}
+                        style={{
+                            background: 'rgba(255,255,255,0.1)',
+                            border: '1px solid rgba(255,255,255,0.2)',
+                            color: 'white',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '20px',
+                            backdropFilter: 'blur(10px)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            cursor: 'pointer',
+                            fontSize: '0.875rem'
+                        }}
+                    >
+                        <Download size={16} /> Save PDF
+                    </button>
+
                     <button
                         onClick={() => navigate('/')}
                         style={{

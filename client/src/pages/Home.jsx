@@ -41,8 +41,9 @@ const Home = () => {
             navigate('/itinerary', { state: { itinerary: data } });
 
         } catch (err) {
-            console.error(err);
-            setError(err.response?.data?.message || 'Failed to generate itinerary. Please try again.');
+            console.warn("Generation failed:", err);
+            const msg = err.response?.data?.message || 'The AI service is currently busy or unavailable. Please try again in a few moments.';
+            setError(msg);
         } finally {
             setLoading(false);
         }
